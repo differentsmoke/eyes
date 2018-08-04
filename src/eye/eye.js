@@ -22,30 +22,10 @@ Eye.prototype.draw = function() {
 
     context.fillStyle = "white";
     context.beginPath();
-    context.ellipse(
-        center.x,
-        center.y,
-        radius,
-        radius,
-        0,
-        Math.PI * 2,
-        0,
-        Math.PI * 2
-    );
+    context.ellipse(center.x, center.y, radius, radius, 0, 0, Math.PI * 2);
     context.fill();
-    context.fillStyle = "pink";
-    context.beginPath();
-    context.ellipse(
-        pupil.x,
-        pupil.y,
-        irisRadius,
-        irisRadius,
-        0,
-        Math.PI * 2,
-        0,
-        Math.PI * 2
-    );
-    context.fill();
+
+    this.drawIris();
 
     context.fillStyle = "black";
     context.beginPath();
@@ -55,7 +35,6 @@ Eye.prototype.draw = function() {
         pupilRadius,
         pupilRadius,
         0,
-        Math.PI * 2,
         0,
         Math.PI * 2
     );
@@ -113,6 +92,36 @@ Eye.prototype.focusVector = function() {
             y: (y / magnitude) * this.speed
         };
     }
+};
+
+Eye.prototype.drawIris = function() {
+    const { context, pupil, irisRadius } = this;
+
+    const colors = ["hsl(200,50%,50%)", "hsl(180,50%,70%)", "hsl(220,50%,50%)"];
+    let start = 0;
+    const increment = Math.PI / 36;
+
+    context.moveTo(pupil.x, pupil.y + irisRadius);
+    while (start < Math.PI * 2) {
+        context.fillStyle = colors[0];
+        let sine = Math.sin(start);
+        let cosine = Math.cos(start);
+        let x = pupil.x + irisRadius * sine;
+        let y = pupil.y + irisRadius * cosine;
+        start = start + increment;
+        context.beginPath();
+        context.lineTo(x, y);
+        sine = Math.sin(start);
+        cosine = Math.cos(start);
+        x = pupil.x + irisRadius * sine;
+        y = pupil.y + irisRadius * cosine;
+        context.lineTo(x, y);
+        context.lineTo(pupil.x, pupil.y);
+        context.fill();
+        const first = colors.shift();
+        colors.push(first);
+    }
+    context.fillStyle = colors[0];
 };
 
 Eye.distance = function(v1, v2) {
