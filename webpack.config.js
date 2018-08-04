@@ -1,19 +1,18 @@
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
-const mode = process.env;
+const mode =
+    process.env.npm_lifecycle_event === "build" ? "production" : "development";
 
 const html = new HTMLWebpackPlugin({
     title: "I'm watching you"
 });
 
-console.log(mode);
-
 config = {
-    mode: "development",
+    mode,
     entry: "./src/index.js",
     output: {
-        path: __dirname + "/dist/",
+        path: __dirname, // + "/dist/",
         filename: "app.js"
     },
     devServer: {
