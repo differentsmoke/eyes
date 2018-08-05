@@ -18,7 +18,8 @@ window.onload = function() {
                 },
                 radius: 50,
                 irisRadius: 25,
-                pupilRadius: 15
+                pupilRadius: 12,
+                hue: Math.floor(Math.random() * 360)
             });
             eyes.push(eye);
         }
@@ -49,6 +50,7 @@ window.onload = function() {
     canvas.onmousemove = function(event) {
         const { x, y } = event;
         eyes.forEach(function(eye) {
+            eye.speed = 10;
             eye.focus = {
                 x,
                 y
@@ -58,6 +60,7 @@ window.onload = function() {
 
     canvas.onmouseleave = function(event) {
         eyes.forEach(function(eye) {
+            eye.speed = 2;
             eye.focus = {
                 x: eye.center.x,
                 y: eye.center.y
