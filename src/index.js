@@ -1,20 +1,23 @@
 import { Eye } from "./eye/eye.js";
 import "./index.css";
 
-const width = 800;
-const height = 800;
-
 window.onload = function() {
-    const canvas = createCanvas();
-    const context = canvas.getContext("2d");
-    const eyes = [];
-    for (let i = 0; i < 5; i = i + 1) {
-        for (let j = 0; j < 5; j = j + 1) {
+    const canvas = getCanvas(),
+        context = canvas.getContext("2d"),
+        eyes = [],
+        width = canvas.offsetWidth,
+        height = canvas.offsetHeight,
+        side = 5,
+        spread = 120,
+        margin = (width - (side-1) * spread) /2;
+
+    for (let i = 0; i < side; i = i + 1) {
+        for (let j = 0; j < side; j = j + 1) {
             const eye = new Eye({
                 context,
                 center: {
-                    x: 120 * (i + 1),
-                    y: 120 * (j + 1)
+                    x: spread * i + margin,
+                    y: spread * j + margin
                 },
                 radius: 50,
                 irisRadius: 25,
@@ -25,36 +28,19 @@ window.onload = function() {
         }
     }
 
-    /* const eyes = [
-        new Eye({
-            context,
-            center: {
-                x: 150,
-                y: 150
-            },
-            focus: {
-                x: 150,
-                y: 150
-            }
-        }),
-        new Eye({
-            context,
-            center: { x: 400, y: 150 },
-            focus: { x: 400, y: 150 },
-            radius: 50,
-            irisRadius: 30,
-            pupilRadius: 20
-        })
-    ];*/
-
     canvas.onmousemove = function(event) {
+        const { x, y, target } = event;
+        eyes.forEach(function(eye) {
+            eye.focus = {
+                x: x - target.offsetLeft,
+                y: y - target.offsetTop
+            };
+        });
+    };
+    canvas.onmouseenter = function(event) {
         const { x, y } = event;
         eyes.forEach(function(eye) {
-            eye.speed = 10;
-            eye.focus = {
-                x,
-                y
-            };
+            eye.speed = Math.round(1 + Math.random() * 5);
         });
     };
 
@@ -68,17 +54,20 @@ window.onload = function() {
         });
     };
 
-    setInterval(function() {
-        context.clearRect(0, 0, width, height);
+    function frame() {
+        context.clearRect(0, 0, 1000, 1000);
         eyes.forEach(function(eye) {
             eye.update();
         });
-    }, 40);
+        requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
 };
 
-function createCanvas() {
-    const canvas = document.createElement("canvas");
-    window.document.body.appendChild(canvas);
+function getCanvas() {
+    const canvas = document.querySelector("#canvas");
+    const height = canvas.offsetHeight;
+    const width = canvas.offsetWidth;
     canvas.setAttribute("width", `${width}px`);
     canvas.setAttribute("height", `${height}px`);
     return canvas;

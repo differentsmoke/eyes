@@ -5,7 +5,8 @@ const mode =
     process.env.npm_lifecycle_event === "build" ? "production" : "development";
 
 const html = new HTMLWebpackPlugin({
-    title: "I'm watching you"
+    title: "I'm watching you",
+    template: __dirname + "/src/index.ejs"
 });
 
 config = {

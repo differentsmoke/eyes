@@ -21,14 +21,19 @@ Eye.prototype.draw = function() {
     } = this;
 
     context.fillStyle = "white";
+    context.shadowBlur = 8;
+    context.shadowColor = "gray";
     context.beginPath();
     context.ellipse(center.x, center.y, radius, radius, 0, 0, Math.PI * 2);
     context.fill();
+    context.shadowBlur = 0;
 
     this.drawIris();
 
     context.fillStyle = "black";
+
     context.beginPath();
+
     context.ellipse(
         pupil.x,
         pupil.y,
@@ -97,6 +102,21 @@ Eye.prototype.focusVector = function() {
 Eye.prototype.drawIris = function() {
     const { context, pupil, irisRadius } = this;
 
+    context.beginPath();
+    context.shadowBlur = 2;
+    context.shadowColor = "black";
+    context.ellipse(
+        pupil.x,
+        pupil.y,
+        irisRadius,
+        irisRadius,
+        0,
+        0,
+        Math.PI * 2
+    );
+    context.fill();
+    context.shadowBlur = 0;
+
     context.moveTo(pupil.x, pupil.y + irisRadius);
     this.irisData.forEach(function(slice) {
         context.fillStyle = slice[0];
@@ -126,13 +146,13 @@ Eye.distance = function(v1, v2) {
 
 Eye.irisData = function(hue = 200, sat = 50, light = 50) {
     let start = 0;
-    const increment = Math.PI / 16;
+    const increment = Math.PI / 24;
     const irisSlices = [];
     while (start < Math.PI * 2) {
         irisSlices.push([
-            `hsl(${hue - 15 + Math.random() * 30},${sat -
+            `hsl(${hue},${sat - 15 + Math.random() * 30}%,${light -
                 15 +
-                Math.random() * 30}%,${light - 15 + Math.random() * 30}%)`,
+                Math.random() * 30}%)`,
             start,
             start + increment
         ]);
