@@ -60,7 +60,7 @@ window.onload = function() {
 
     canvas.onmouseleave = function(event) {
         eyes.forEach(function(eye) {
-            eye.speed = 2;
+            eye.speed = 0.5;
             eye.focus = {
                 x: eye.center.x,
                 y: eye.center.y
